@@ -1,4 +1,4 @@
-/*this file can create an app, which creates an array of cars with their information. After this, creates a file and then downloads all information there.
+/*this file can create an app, which creates an array. After this, creates a file and then downloads all information there.
 Even if file is closed, and app is restarted, it can print out all the cars in the file */
 
 package sest;
