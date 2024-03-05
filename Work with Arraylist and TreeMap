@@ -1,0 +1,162 @@
+package labacetyre;
+import java.util.Scanner;
+import java.util.*;
+
+class invention {
+    
+    private String name;
+    private String inventor;
+    private int year;
+    
+    invention(String name, String inventor, int year){
+        
+        this.name = name;
+        this.inventor = inventor;
+        this.year = year;
+        
+    }
+    
+    public String getname(){
+        return name;
+    }
+    
+     public String getinventor(){
+        return inventor;
+    }
+      public int year(){
+        return year;
+    }
+    
+    @Override
+    public String toString(){
+     return "| Изобретение: " + name + " | Изобретатель: " + inventor + " | Год создания: " + year + " |";   
+    }
+}
+public class LabaCetyre {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in, "utf-8");
+        
+        System.out.println("Работаем с ArrayList.");
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.print("Введите количество изобретений: ");
+        int n = sc.nextInt();
+        System.out.println("-----------------------------------------------------------------------------------");
+        
+        ArrayList invent  = new ArrayList <invention>();
+        for (int i = 0; i < n; i++){
+            System.out.print("Введите названние изобретения: ");
+            String name = sc.next();
+            System.out.print("Введите фамилию изобретателя: ");
+            String inventor = sc.next();
+            System.out.print("Введите год создания: ");
+            int year = sc.nextInt();
+            invent.add(new invention(name, inventor, year));
+            System.out.println("-----------------------------------------------------------------------------------");
+        }
+        
+        System.out.println("Вот список:");
+        Object[] inv = invent.toArray();
+        for (Object in : inv){
+            System.out.println(in);
+        }
+        
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.print("Ну что, теперь добавим один элемент. Введите индекс элемента от 0 и меньше или равный " + n + ": ");
+        int ind = sc.nextInt();
+        System.out.print("Введите названние изобретения: ");
+        String name = sc.next();
+        System.out.print("Введите фамилию изобретателя: ");
+        String inventor = sc.next();
+        System.out.print("Введите год создания: ");
+        int year = sc.nextInt();
+        invent.add(ind, new invention(name, inventor, year));       
+        
+        System.out.println("Вот новый список:");
+        Object[] inv2 = invent.toArray();       
+        for (Object in : inv2){
+            System.out.println(in);
+        }
+        
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.print("Теперь нужно удалить один элемент. Введите индекс элемента от 0 до " + n + ": ");
+        int ind2 = sc.nextInt();
+        invent.remove(ind2);
+        
+        System.out.println("И еще один новый список:");
+        Object[] inv3 = invent.toArray();       
+       for (Object in : inv3){
+            System.out.println(in);
+        }
+       
+       System.out.println("-----------------------------------------------------------------------------------");
+       System.out.print("А теперь заменим один элемент. Введите индекс элемента меньше или равный " + (n - 1) + ": ");
+        int ind3 = sc.nextInt();
+        System.out.print("Введите новое названние изобретения: ");
+        String name1 = sc.next();
+        System.out.print("Введите новую фамилию изобретателя: ");
+        String inventor1 = sc.next();
+        System.out.print("Введите новый год создания: ");
+        int year1 = sc.nextInt();
+        invent.set(ind3, new invention(name1, inventor1, year1));       
+        
+        System.out.println("Последний новый список:");
+        Object[] inv4 = invent.toArray(); 
+        for (Object in : inv4){
+            System.out.println(in);
+        }
+       
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.println("А теперь работаем с TreeMap.");
+        TreeMap it = new TreeMap();
+        System.out.println("-----------------------------------------------------------------------------------");
+       
+        System.out.print("Введите количество изобретений: ");
+        int m = sc.nextInt();
+        System.out.println("-----------------------------------------------------------------------------------");
+        for (int i = 0; i < m; i++){
+            System.out.print("Введите названние изобретения: ");
+            String name2 = sc.next();
+            System.out.print("Введите фамилию изобретателя: ");
+            String inventor2 = sc.next();
+            System.out.print("Введите год создания: ");
+            int year2 = sc.nextInt();
+            System.out.println("-----------------------------------------------------------------------------------");
+            it.put(name2,new invention(name2, inventor2, year2)); 
+        }
+        
+        System.out.println("И вот готовый список.");
+        Set set = it.entrySet();
+        Iterator im = set.iterator();
+        while(im.hasNext()) {
+            Map.Entry me = (Map.Entry)im.next();
+            System.out.println(me.getValue());
+        }
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.print("Введите изобретение, которое хотите вывести: ");
+        String name2 = sc.next();
+        if (it.get(name2) != null){
+            System.out.println(it.get(name2));  
+        }
+        else{
+            System.out.println("Вы ввели неправильное изобретение!!!"); 
+        }
+        
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.print("Введите изобретение, которое хотите удалить: ");
+        name2 = sc.next();
+        System.out.println("И вот новый список:");
+        if (it.get(name2) != null){
+                it.remove(name2);
+                Set set1 = it.entrySet();
+                Iterator im1 = set1.iterator();
+                while(im1.hasNext()) {
+                    Map.Entry me = (Map.Entry)im1.next();
+                    System.out.println(me.getValue());
+                }
+        }
+        else{
+            System.out.println("Вы ввели неправильное изобретение!!!"); 
+        }
+    }
+}
