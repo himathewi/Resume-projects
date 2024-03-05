@@ -1,0 +1,144 @@
+/*this file can create an app, which creates an array of cars with their information. After this, creates a file and then downloads all information there.
+Even if file is closed, and app is restarted, it can print out all the cars in the file */
+
+package sest;
+
+import java.util.ArrayList;
+import java.io.*;
+import javafx.application.Application;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import javafx.scene.control.CheckBox;
+import javafx.scene.layout.FlowPane;
+
+
+class ship implements Serializable{
+    
+    private String name;
+    private int year;   
+    private double water;
+    
+    ship(String name, int year, double water){
+        
+        this.name = name;
+        this.year = year;       
+        this.water = water;    
+    }
+    
+    public String getname(){
+        return name;
+    }    
+    
+    public int getyear(){
+        return year;
+    }
+
+    public double getwater(){
+        return water;
+    }
+    
+    @Override
+    public String toString(){
+        return "| Название корабля: " + name + " | Год выпуска: " + year + " | Водоизмещение: " + water + " тыс.тонн";   
+    }
+}
+@SuppressWarnings("unchecked")
+public class Sest extends Application {
+
+    @Override
+    public void start(Stage stage) {
+
+        Label name = new Label("Название корабля:");
+        TextField nameField = new TextField();
+        Label year = new Label("Год выпуска корабля:");
+        TextField yearField = new TextField(); 
+        Label water = new Label("Водоизмещение корабля:");
+        TextField waterField = new TextField();
+        Label x1 = new Label("Введите x1");
+        TextField x1Field = new TextField();
+        Label x2 = new Label("Введите x2");
+        TextField x2Field = new TextField(); 
+		
+        CheckBox checkBox = new CheckBox("Выводить объекты согласно условию");
+		
+        Button arraybutton = new Button("Сохранить в массив");
+        Button savebutton = new Button("Сохранить в файл");
+        Button printbutton = new Button("Печать");
+
+        Label objectsforfile = new Label("Объ6екты из файла");
+        TextArea objectsforfileField = new TextArea();
+        Label conditionobjects = new Label("Объекты согласно условию");
+        TextArea conditionobjectsField = new TextArea();
+        
+        FlowPane root = new FlowPane(Orientation.VERTICAL, 5, 5, name, nameField,year, 
+                yearField, water, waterField,  arraybutton, savebutton, printbutton, objectsforfile,
+                objectsforfileField, checkBox,x1, x1Field,x2, x2Field, conditionobjects, conditionobjectsField);		
+		
+        Scene scene = new Scene(root, 500, 800);
+		
+        stage.setTitle("Лабораторная 6");
+        stage.setScene(scene);
+        stage.show();
+
+        ArrayList <ship> arr = new ArrayList<>();
+
+        arraybutton.setOnAction(event -> {           
+            String masname = nameField.getText();
+            int masyear = Integer.parseInt(yearField.getText());
+            double maswater = Double.parseDouble(waterField.getText());
+            
+            arr.add(new ship(masname, masyear, maswater));
+			
+            objectsforfileField.appendText(arr.get(arr.size()-1)+"\n");
+        });
+		
+        savebutton.setOnAction(event -> {
+            String filename = "ship.dat";
+            try (ObjectOutputStream oos = new ObjectOutputStream
+                (new FileOutputStream(filename))) {
+                        oos.writeObject(arr);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
+		
+        printbutton.setOnAction(event -> {
+            objectsforfileField.setText("");
+            conditionobjectsField.setText("");
+            ArrayList <ship> newArr = new ArrayList<ship>();
+            String filename = "ship.dat";
+            try (ObjectInputStream ois = new ObjectInputStream
+                (new FileInputStream(filename))) {
+                newArr = ((ArrayList<ship>)ois.readObject());
+            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println(ex.getMessage());
+            }
+			
+        for (ship s : newArr) {
+            objectsforfileField.appendText(s+"\n");
+        }
+			
+        if (checkBox.isSelected()) {
+            boolean exists = false;
+            for (ship s : newArr) {
+            double x11 = Double.parseDouble(x1Field.getText());
+            double x21 = Double.parseDouble(x2Field.getText());
+            if (s.getwater() >= x11 && s.getwater() <= x21) {
+            conditionobjectsField.appendText(s+"\n");
+            exists = true;
+            }
+        }
+        if (exists == false) {
+            conditionobjectsField.appendText("Таких объектов не существует.");
+            }
+        }
+    });
+}
+	
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
