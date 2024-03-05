@@ -1,0 +1,230 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <iomanip>
+
+using namespace std;
+
+struct vino
+{
+    int tn;
+    string rajon;
+    string name;
+    float tovar;
+    float stoimost;
+    int rab;
+    float trud;
+    int fond;
+};
+
+int main()
+{
+    setlocale(0, "Rus");
+
+    int size;
+
+    cout << "\nУбедитесь, что в названиях предприятий нет пробелов, иначе происходит ошибка вывода таблицы.\n\n";
+    do
+    {
+        cout << "\nСколько предприятий в файле?\n\t>";
+        cin >> size;
+
+        if ((size <= 20) && (!(cin.fail())))
+        {
+            break;
+        }
+        cout << "Недопустимое значение. Вы превысили лимит чтения (20).\n\n";
+        cin.clear();
+        cin.ignore(32767, '\n');
+    } while (true);
+
+
+    //Объявление таблицы. массив строк
+    vino v[size];
+
+    //Открытие файла
+    ifstream FileName("lox.txt");
+    if (!FileName)
+    {
+        cerr << "Ошибка открытия файла!\n";
+        system("PAUSE");
+        exit(69);
+    }
+
+
+    //Вписание файла в структуру
+    for (int i = 0; i < size; i++)
+    {
+        FileName >> v[i].tn
+            >> v[i].rajon
+            >> v[i].name
+            >> v[i].tovar
+            >> v[i].stoimost
+            >> v[i].rab;
+    }
+
+    //Вычисляем производительность и фондоотдачу
+    int mini = 0;
+    float tempmin = -1000000;
+    for (int i = 0; i < size; i++)
+    {
+        v[i].trud = v[i].tovar / v[i].rab;
+
+        if (v[i].trud > tempmin)
+        {
+            mini = i;
+            tempmin = v[i].trud;
+        }
+    }
+    int mini1 = 0;
+    float tempmin1 = -1000000;
+    for (int i = 0; i < size; i++)
+    {
+        v[i].fond = v[i].tovar / v[i].trud;
+
+        if (v[i].fond > tempmin1)
+        {
+            mini1 = i;
+            tempmin1 = v[i].fond;
+        }
+    }
+
+    cout << setw(137) << setfill('-') << "\n";
+    cout << "| "
+        << " № "
+        << " | "
+        << "  Район  "
+        << " | "
+        << "  Предприятие   "
+        << " | "
+        << "Товарная продукция"
+        << " | "
+        << "Стоимость фондов"
+        << " | "
+        << "Количество персонала"
+        << " | "
+        << "Производительность"
+        << " | "
+        << "Фондоотдача |\n";
+    cout << setw(137) << setfill('-') << "\n";
+    cout << setfill(' ');
+
+
+    //Объявляем переменные для итога внизу
+    float strud = 0;
+    float sfond = 0;
+    float avtrud;
+    float avfond;
+
+
+    //Печатаем саму таблицу
+
+    for (int i = 0; i < size; i++)
+    {
+        cout << left << "| "
+            << setw(2) << v[i].tn << "  | "
+            << setw(9) << v[i].rajon << " | "
+            << setw(16) << v[i].name << " | "
+            << setw(18) << v[i].tovar << " | "
+            << setw(16) << v[i].stoimost << " | "
+            << setw(20) << setprecision(2) << v[i].rab << " | "
+            << setw(18) << setprecision(2) << v[i].trud << " | "
+            << setw(11) << v[i].fond << " |\n";
+        cout << resetiosflags(ios::fixed);
+        cout << left << setfill('-') << setw(136) << "-";
+        cout << setfill(' ') << "\n";
+
+
+        //Считаем итоги
+        strud = strud + v[i].trud;
+        sfond = sfond + v[i].fond;
+    }
+    avtrud = strud / size;
+    avfond = sfond / size;
+
+    //Выводим итоги таблицы
+    cout << "|" << setw(99) << "                                                   Итого(средние): " << "|  "
+        << setw(17) << setprecision(4) << avtrud << " | "
+        << setw(11) << avfond << " |\n";
+    cout << left << setfill('-') << setw(136) << "-";
+    cout << setfill(' ') << "\n";
+
+    float mintovar;
+    float maxtovar;
+
+    //Задаем минимум и максимум объема выпуска товарной продукции
+
+    cout << "\nВведите интервал объема выпуска товарной продукции от: ";
+
+    cin >> mintovar;
+
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore(74274, '\n');
+    }
+
+    cout << "\nДо: ";
+
+    cin >> maxtovar;
+
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore(74274, '\n');
+    }
+
+    mini = -1;
+    tempmin = -1000000;
+    cout << setw(137) << setfill('-') << "\n";
+    cout << "\n| "
+        << " № "
+        << " | "
+        << "  Район  "
+        << " | "
+        << "  Предприятие   "
+        << " | "
+        << "Товарная продукция"
+        << " | "
+        << "Стоимость фондов"
+        << " | "
+        << "Количество персонала"
+        << " | "
+        << "Производительность"
+        << " | "
+        << "Фондоотдача |";
+    cout << setw(137) << setfill('-') << "\n";
+    cout << setfill(' ');
+
+    for (int i = 0; i < size; i++)
+    {
+        if ((v[i].tovar <= maxtovar) && (v[i].tovar >= mintovar))
+        {
+            cout << left << "\n| "
+                << setw(2) << v[i].tn << "  | "
+                << setw(9) << v[i].rajon << " | "
+                << setw(16) << v[i].name << " | "
+                << setw(18) << v[i].tovar << " | "
+                << setw(16) << v[i].stoimost << " | "
+                << setw(20) << setprecision(2) << v[i].rab << " | "
+                << setw(18) << setprecision(2) << v[i].trud << " | "
+                << setw(11) << v[i].fond << " |";
+            cout << resetiosflags(ios::fixed);
+            cout << setw(137) << setfill('-') << "\n";
+            cout << setfill(' ');
+
+            if (v[i].tovar > tempmin)
+            {
+                mini = i;
+                tempmin = v[i].tovar;
+            }
+        }
+    }
+    if (mini == -1)
+    {
+        cout << "\nПредприятий с такой продукцией не найдено!\n";
+        return 6;
+    }
+    cout << "\nПредприятие с наибольшей фоондоотдачей: " << v[mini].name << "\n";
+    cout << "\nПредприятие с наибольшей производительностью труда: " << v[mini1].name << "\n";
+}
